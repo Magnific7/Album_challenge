@@ -1,25 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import "./App.css";
+import FormComponent from "./component/form";
+import AlbumCard from "./component/albums";
+import { getAlbumsAction } from "./redux/actions";
 
-function App() {
+const App = () => {
+  const [albumId, setAlbumId] = useState("");
+  const dispatch = useDispatch();
+  const photos = useSelector((state) => state.data);
+  const onChange = ({ value }) => {
+    console.log(value);
+    setAlbumId(value);
+  };
+
+  const handleSubmit = () => {
+    dispatch(getAlbumsAction(albumId));
+  };
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h2>Albums App</h2>
+      <FormComponent handleSubmit={handleSubmit} onChange={onChange} />
+      <div className="card-wrapper">
+        {photos.map((photo) => (
+          <AlbumCard
+            thumbnail={photo.thumbnailUrl}
+            text={photo.title}
+            key={photo.id}
+          />
+        ))}
+      </div>
     </div>
   );
-}
+};
 
 export default App;
